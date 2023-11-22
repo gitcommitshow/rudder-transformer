@@ -3,83 +3,63 @@ import { RetryRequestError, RespStatusError, constructValidationErrors } from '.
 import { getMetadata } from '../v0/util';
 import eventValidator from '../util/eventValidation';
 import stats from '../util/stats';
+import { HTTP_STATUS_CODES } from '../v0/util/constant';
 
 export class TrackingPlanservice {
-  public static async validateTrackingPlan(events, requestSize, reqParams) {
-    const requestStartTime = new Date();
+
+  public static validate(events, requestSize, reqParams) {
+    const startTime = new Date();
     const respList: any[] = [];
-    const metaTags = events[0].metadata ? getMetadata(events[0].metadata) : {};
+    const metaTags = events.length && events[0].metadata ? getMetadata(events[0].metadata) : {};
     let ctxStatusCode = 200;
 
-    for (let i = 0; i < events.length; i++) {
-      const event = events[i];
-      const eventStartTime = new Date();
+    for(let event of events) {
+      let toAdd;
+      let exceptionOccured = false;
+
       try {
-        const parsedEvent = event;
-        parsedEvent.request = { query: reqParams };
-        const hv = await eventValidator.handleValidation(parsedEvent);
-        if (hv['dropEvent']) {
-          respList.push({
-            output: event.message,
-            metadata: event.metadata,
-            statusCode: 400,
-            validationErrors: hv['validationErrors'],
-            error: JSON.stringify(constructValidationErrors(hv['validationErrors'])),
-          });
-          stats.counter('tp_violation_type', 1, {
-            violationType: hv['violationType'],
-            ...metaTags,
-          });
-        } else {
-          respList.push({
-            output: event.message,
-            metadata: event.metadata,
-            statusCode: 200,
-            validationErrors: hv['validationErrors'],
-            error: JSON.stringify(constructValidationErrors(hv['validationErrors'])),
-          });
-          stats.counter('tp_propagated_events', 1, {
-            ...metaTags,
-          });
-        }
-      } catch (error) {
-        const errMessage = `Error occurred while validating : ${error}`;
-        logger.error(errMessage);
-        let status = 200;
-        if (error instanceof RetryRequestError) {
-          ctxStatusCode = error.statusCode;
-        }
-        if (error instanceof RespStatusError) {
-          status = error.statusCode;
-        }
-        respList.push({
+        event.request = { query: reqParams }; // FIXME: Do we need this update ?
+        const validatedEvent = eventValidator.handleValidation(event);
+        toAdd = {
           output: event.message,
           metadata: event.metadata,
-          statusCode: status,
+          statusCode: validatedEvent['dropEvent'] ? HTTP_STATUS_CODES.BAD_REQUEST : HTTP_STATUS_CODES.OK,
+          validationErrors: validatedEvent['validationErrors'],
+          error: JSON.stringify(constructValidationErrors(validatedEvent['validationErrors'])),
+        }
+      } catch (error) {
+        exceptionOccured = true;
+        // no need to process further if
+        // we have error of retry request error
+        if (error instanceof RetryRequestError) {
+          ctxStatusCode = error.statusCode;
+          break;
+        }
+
+        toAdd = {
+          output: event.message,
+          metadata: event.metadata,
+          statusCode: error instanceof RespStatusError ? error.statusCode : HTTP_STATUS_CODES.OK,
           validationErrors: [],
-          error: errMessage,
-        });
-        stats.counter('tp_errors', 1, {
-          ...metaTags,
-          workspaceId: event.metadata?.workspaceId,
-          trackingPlanId: event.metadata?.trackingPlanId,
-        });
-      } finally {
-        stats.timing('tp_event_latency', eventStartTime, {
-          ...metaTags,
-        });
+          error: `Error occurred while validating: ${error}`,
+        };
       }
+
+      // finally on every event, we need to
+      // capture the information related to the validates event
+      stats.counter('tp_event_validation', 1, {
+        ...metaTags,
+        workspaceId: event.metadata.workspaceId,
+        trackingPlanId: event.metadata.trackingPlanId,
+        status: toAdd.statusCode,
+        exception: exceptionOccured,
+      })
+      respList.push(toAdd);
     }
 
-    stats.counter('tp_events_count', events.length, {
-      ...metaTags,
-    });
-
-    stats.histogram('tp_request_size', requestSize, {
-      ...metaTags,
-    });
-
-    stats.timing('tp_request_latency', requestStartTime, {
+    // capture overall function latency
+    // with metadata tags
+    stats.timing('tp_request_latency', startTime, {
       ...metaTags,
       workspaceId: events[0]?.metadata?.workspaceId,
       trackingPlanId: events[0]?.metadata?.trackingPlanId,
