@@ -6,6 +6,7 @@ import Koa from 'koa';
 import bodyParser from 'koa-bodyparser';
 import setValue from 'set-value';
 import { applicationRoutes } from '../../src/routes';
+import { FetchHandler } from '../../src/helpers/fetchHandlers';
 
 let server: any;
 const OLD_ENV = process.env;
@@ -28,6 +29,10 @@ afterAll(async () => {
     server,
   });
   await httpTerminator.terminate();
+});
+
+afterEach(() => {
+  jest.clearAllMocks();
 });
 
 const getDataFromPath = (pathInput) => {
@@ -73,6 +78,138 @@ describe('features tests', () => {
     expect(response.status).toEqual(200);
     const supportTransformerProxyV1 = JSON.parse(response.text).supportTransformerProxyV1;
     expect(typeof supportTransformerProxyV1).toBe('boolean');
+  });
+});
+
+describe('Api tests with a mock destination', () => {
+  test('(mock destination) Processor transformation - success scenario with single event', async () => {
+    const destType = '__rudder_test__';
+    const version = 'v0';
+    const getInputData = () => {
+      return [
+        { message: { a: 'b1' }, destination: {}, metadata: { jobId: 1 } },
+        { message: { a: 'b2' }, destination: {}, metadata: { jobId: 2 } },
+      ];
+    };
+    const tevent = { version: 'v0', endpoint: 'http://abc' };
+
+    const getDestHandlerSpy = jest
+      .spyOn(FetchHandler, 'getDestHandler')
+      .mockImplementationOnce((d, v) => {
+        expect(d).toEqual(destType);
+        expect(v).toEqual(version);
+        return {
+          process: jest.fn(() => {
+            return tevent;
+          }),
+        };
+      });
+
+    const expected = [
+      {
+        output: { version: 'v0', endpoint: 'http://abc', userId: '' },
+        metadata: { jobId: 1 },
+        statusCode: 200,
+      },
+      {
+        output: { version: 'v0', endpoint: 'http://abc', userId: '' },
+        metadata: { jobId: 2 },
+        statusCode: 200,
+      },
+    ];
+
+    const response = await request(server)
+      .post('/v0/destinations/__rudder_test__')
+      .set('Accept', 'application/json')
+      .send(getInputData());
+
+    expect(response.status).toEqual(200);
+    expect(JSON.parse(response.text)).toEqual(expected);
+    expect(getDestHandlerSpy).toHaveBeenCalledTimes(1);
+  });
+
+  test('(mock destination) Batching - success', async () => {
+    const destType = '__rudder_test__';
+    const version = 'v0';
+    const getBatchInputData = () => {
+      return {
+        input: [
+          { message: { a: 'b1' }, destination: {}, metadata: { jobId: 1 } },
+          { message: { a: 'b2' }, destination: {}, metadata: { jobId: 2 } },
+        ],
+        destType: destType,
+      };
+    };
+    const tevent = [
+      {
+        batchedRequest: { version: 'v0', endpoint: 'http://abc' },
+        metadata: [{ jobId: 1 }, { jobId: 2 }],
+        statusCode: 200,
+      },
+    ];
+
+    const getDestHandlerSpy = jest
+      .spyOn(FetchHandler, 'getDestHandler')
+      .mockImplementationOnce((d, v) => {
+        expect(d).toEqual(destType);
+        expect(v).toEqual(version);
+        return {
+          batch: jest.fn(() => {
+            return tevent;
+          }),
+        };
+      });
+
+    const response = await request(server)
+      .post('/batch')
+      .set('Accept', 'application/json')
+      .send(getBatchInputData());
+
+    expect(response.status).toEqual(200);
+    expect(JSON.parse(response.text)).toEqual(tevent);
+    expect(getDestHandlerSpy).toHaveBeenCalledTimes(1);
+  });
+
+  test('(mock destination) Router transformation - success', async () => {
+    const destType = '__rudder_test__';
+    const version = 'v0';
+    const getRouterTransformInputData = () => {
+      return {
+        input: [
+          { message: { a: 'b1' }, destination: {}, metadata: { jobId: 1 } },
+          { message: { a: 'b2' }, destination: {}, metadata: { jobId: 2 } },
+        ],
+        destType: destType,
+      };
+    };
+    const tevent = [
+      {
+        batchedRequest: { version: 'v0', endpoint: 'http://abc' },
+        metadata: [{ jobId: 1 }, { jobId: 2 }],
+        statusCode: 200,
+      },
+    ];
+
+    const getDestHandlerSpy = jest
+      .spyOn(FetchHandler, 'getDestHandler')
+      .mockImplementationOnce((d, v) => {
+        expect(d).toEqual(destType);
+        expect(v).toEqual(version);
+        return {
+          processRouterDest: jest.fn(() => {
+            return tevent;
+          }),
+        };
+      });
+
+    const response = await request(server)
+      .post('/routerTransform')
+      .set('Accept', 'application/json')
+      .send(getRouterTransformInputData());
+
+    expect(response.status).toEqual(200);
+    expect(JSON.parse(response.text)).toEqual({ output: tevent });
+    expect(getDestHandlerSpy).toHaveBeenCalledTimes(1);
   });
 });
 
@@ -183,6 +320,7 @@ describe('Destination api tests', () => {
       expect(response.status).toEqual(200);
       expect(JSON.parse(response.text)).toEqual(data.output);
     });
+
     test('(pinterest_tag) failure router transform(partial failure)', async () => {
       const data = getDataFromPath('./data_scenarios/destination/router/failure_test.json');
       const response = await request(server)
