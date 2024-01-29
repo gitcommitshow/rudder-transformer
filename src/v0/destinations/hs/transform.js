@@ -86,6 +86,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
 
   try {
     if (mappedToDestination && GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString())) {
+      // retl
       // skip splitting the batches to inserts and updates if object it is an association
       if (objectType.toLowerCase() !== 'association') {
         propertyMap = await getProperties(destination);
