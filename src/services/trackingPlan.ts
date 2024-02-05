@@ -13,8 +13,8 @@ export class TrackingPlanservice {
     const metaTags = events.length && events[0].metadata ? getMetadata(events[0].metadata) : {};
     let ctxStatusCode = 200;
 
-    for(let event of events) {
-      let toAdd;
+    for (let event of events) {
+      let toAdd: any;
       let exceptionOccured = false;
 
       try {
