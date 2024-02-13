@@ -7,6 +7,7 @@ import bodyParser from 'koa-bodyparser';
 import setValue from 'set-value';
 import { applicationRoutes } from '../../src/routes';
 import { FetchHandler } from '../../src/helpers/fetchHandlers';
+import networkHandlerFactory from '../../src/adapters/networkHandlerFactory';
 
 let server: any;
 const OLD_ENV = process.env;
@@ -82,7 +83,7 @@ describe('features tests', () => {
 });
 
 describe('Api tests with a mock destination', () => {
-  test('(mock destination) Processor transformation - success scenario with single event', async () => {
+  test('(mock destination) Processor transformation scenario with single event', async () => {
     const destType = '__rudder_test__';
     const version = 'v0';
     const getInputData = () => {
@@ -128,7 +129,7 @@ describe('Api tests with a mock destination', () => {
     expect(getDestHandlerSpy).toHaveBeenCalledTimes(1);
   });
 
-  test('(mock destination) Batching - success', async () => {
+  test('(mock destination) Batching', async () => {
     const destType = '__rudder_test__';
     const version = 'v0';
     const getBatchInputData = () => {
@@ -170,7 +171,7 @@ describe('Api tests with a mock destination', () => {
     expect(getDestHandlerSpy).toHaveBeenCalledTimes(1);
   });
 
-  test('(mock destination) Router transformation - success', async () => {
+  test('(mock destination) Router transformation', async () => {
     const destType = '__rudder_test__';
     const version = 'v0';
     const getRouterTransformInputData = () => {
@@ -210,6 +211,120 @@ describe('Api tests with a mock destination', () => {
     expect(response.status).toEqual(200);
     expect(JSON.parse(response.text)).toEqual({ output: tevent });
     expect(getDestHandlerSpy).toHaveBeenCalledTimes(1);
+  });
+
+  test('(mock destination) v0 proxy', async () => {
+    const destType = '__rudder_test__';
+    const version = 'v0';
+
+    const getData = () => {
+      return {
+        body: { JSON: { a: 'b' } },
+        metadata: { a1: 'b1' },
+        destinationConfig: { a2: 'b2' },
+      };
+    };
+
+    const proxyResponse = { success: true, response: { response: 'response', code: 200 } };
+
+    const mockNetworkHandler = {
+      proxy: jest.fn((r, d) => {
+        expect(r).toEqual(getData());
+        expect(d).toEqual(destType);
+        return proxyResponse;
+      }),
+      processAxiosResponse: jest.fn((r) => {
+        expect(r).toEqual(proxyResponse);
+        return { response: 'response', status: 200 };
+      }),
+      responseHandler: jest.fn((o, d) => {
+        expect(o).toEqual({ response: 'response', status: 200, rudderJobMetadata: { a1: 'b1' } });
+        expect(d).toEqual(destType);
+        return { status: 200, message: 'response', destinationResponse: 'response' };
+      }),
+    };
+
+    const getNetworkHandlerSpy = jest
+      .spyOn(networkHandlerFactory, 'getNetworkHandler')
+      .mockImplementationOnce((d, v) => {
+        expect(d).toEqual(destType);
+        expect(v).toEqual(version);
+        return {
+          networkHandler: mockNetworkHandler,
+          handlerVersion: version,
+        };
+      });
+
+    const response = await request(server)
+      .post('/v0/destinations/__rudder_test__/proxy')
+      .set('Accept', 'application/json')
+      .send(getData());
+
+    expect(response.status).toEqual(200);
+    expect(JSON.parse(response.text)).toEqual({
+      output: { status: 200, message: 'response', destinationResponse: 'response' },
+    });
+    expect(getNetworkHandlerSpy).toHaveBeenCalledTimes(1);
+  });
+
+  test('(mock destination) v1 proxy', async () => {
+    const destType = '__rudder_test__';
+    const version = 'v1';
+
+    const getData = () => {
+      return {
+        body: { JSON: { a: 'b' } },
+        metadata: [{ a1: 'b1' }],
+        destinationConfig: { a2: 'b2' },
+      };
+    };
+
+    const proxyResponse = { success: true, response: { response: 'response', code: 200 } };
+    const respHandlerResponse = {
+      status: 200,
+      message: 'response',
+      destinationResponse: 'response',
+      response: [{ statusCode: 200, metadata: { a1: 'b1' } }],
+    };
+
+    const mockNetworkHandler = {
+      proxy: jest.fn((r, d) => {
+        expect(r).toEqual(getData());
+        expect(d).toEqual(destType);
+        return proxyResponse;
+      }),
+      processAxiosResponse: jest.fn((r) => {
+        expect(r).toEqual(proxyResponse);
+        return { response: 'response', status: 200 };
+      }),
+      responseHandler: jest.fn((o, d) => {
+        expect(o).toEqual({ response: 'response', status: 200, rudderJobMetadata: [{ a1: 'b1' }] });
+        expect(d).toEqual(destType);
+        return respHandlerResponse;
+      }),
+    };
+
+    const getNetworkHandlerSpy = jest
+      .spyOn(networkHandlerFactory, 'getNetworkHandler')
+      .mockImplementationOnce((d, v) => {
+        expect(d).toEqual(destType);
+        expect(v).toEqual(version);
+        return {
+          networkHandler: mockNetworkHandler,
+          handlerVersion: version,
+        };
+      });
+
+    const response = await request(server)
+      .post('/v1/destinations/__rudder_test__/proxy')
+      .set('Accept', 'application/json')
+      .send(getData());
+
+    expect(response.status).toEqual(200);
+    expect(JSON.parse(response.text)).toEqual({
+      output: respHandlerResponse,
+    });
+    expect(getNetworkHandlerSpy).toHaveBeenCalledTimes(1);
   });
 });
 
