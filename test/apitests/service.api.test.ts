@@ -326,6 +326,81 @@ describe('Api tests with a mock destination', () => {
     });
     expect(getNetworkHandlerSpy).toHaveBeenCalledTimes(1);
   });
+
+  test('(mock source) v0 source transformation', async () => {
+    const sourceType = '__rudder_test__';
+    const version = 'v0';
+
+    const getData = () => {
+      return [{ event: { a: 'b1' } }, { event: { a: 'b2' } }];
+    };
+
+    const tevent = { event: 'clicked', type: 'track' };
+
+    const getSourceHandlerSpy = jest
+      .spyOn(FetchHandler, 'getSourceHandler')
+      .mockImplementationOnce((s, v) => {
+        expect(s).toEqual(sourceType);
+        return {
+          process: jest.fn(() => {
+            return tevent;
+          }),
+        };
+      });
+
+    const response = await request(server)
+      .post('/v0/sources/__rudder_test__')
+      .set('Accept', 'application/json')
+      .send(getData());
+
+    const expected = [
+      { output: { batch: [{ event: 'clicked', type: 'track' }] } },
+      { output: { batch: [{ event: 'clicked', type: 'track' }] } },
+    ];
+
+    expect(response.status).toEqual(200);
+    expect(JSON.parse(response.text)).toEqual(expected);
+    expect(getSourceHandlerSpy).toHaveBeenCalledTimes(1);
+  });
+
+  test('(mock source) v1 source transformation', async () => {
+    const sourceType = '__rudder_test__';
+    const version = 'v1';
+
+    const getData = () => {
+      return [
+        { event: { a: 'b1' }, source: { id: 'id' } },
+        { event: { a: 'b2' }, source: { id: 'id' } },
+      ];
+    };
+
+    const tevent = { event: 'clicked', type: 'track' };
+
+    const getSourceHandlerSpy = jest
+      .spyOn(FetchHandler, 'getSourceHandler')
+      .mockImplementationOnce((s, v) => {
+        expect(s).toEqual(sourceType);
+        return {
+          process: jest.fn(() => {
+            return tevent;
+          }),
+        };
+      });
+
+    const response = await request(server)
+      .post('/v1/sources/__rudder_test__')
+      .set('Accept', 'application/json')
+      .send(getData());
+
+    const expected = [
+      { output: { batch: [{ event: 'clicked', type: 'track' }] } },
+      { output: { batch: [{ event: 'clicked', type: 'track' }] } },
+    ];
+
+    expect(response.status).toEqual(200);
+    expect(JSON.parse(response.text)).toEqual(expected);
+    expect(getSourceHandlerSpy).toHaveBeenCalledTimes(1);
+  });
 });
 
 describe('Destination api tests', () => {
