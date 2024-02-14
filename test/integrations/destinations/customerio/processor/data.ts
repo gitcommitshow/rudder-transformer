@@ -8275,4 +8275,126 @@ export const data = [
       },
     },
   },
+  {
+    name: 'customerio',
+    description: 'Input validation',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              type: 'page',
+              sentAt: '2024-02-04T13:20:06.875Z',
+              userId: '12345',
+              channel: 'web',
+              context: {
+                os: {
+                  name: '',
+                  version: '',
+                },
+                app: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '3.0.0-beta.20',
+                  namespace: 'com.rudderlabs.javascript',
+                },
+                page: {
+                  url: 'https://studio.moises.ai/library/',
+                  path: '/library/',
+                  title:
+                    "Moises - The Musician's App | Remove vocals and instruments from any song",
+                  search: '',
+                  tab_url: 'https://studio.moises.ai/library/',
+                  referrer: '$direct',
+                  initial_referrer: 'https://www.google.com.tw/',
+                  referring_domain: '',
+                  initial_referring_domain: 'www.google.com.tw',
+                },
+                locale: 'zh-TW',
+                screen: {
+                  width: 810,
+                  height: 1080,
+                  density: 2,
+                  innerWidth: 760,
+                  innerHeight: 707,
+                },
+                traits: {},
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '3.0.0-beta.20',
+                },
+                campaign: {},
+                timezone: 'GMT+0800',
+                sessionId: 1707052806859,
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.5.1 Safari/605.1.15',
+              },
+              messageId: 'f9491b31-e634-4c65-9338-dc2b096c2109',
+              properties: {
+                path: '/test',
+                referrer: 'Rudder',
+                search: 'abc',
+                title: 'Test Page',
+                url: 'www.rudderlabs.com',
+              },
+              anonymousId: 'b1d711c3-8856-4148-a292-405fe28273ab',
+              integrations: {
+                All: true,
+              },
+              originalTimestamp: '2024-02-04T13:20:06.874Z',
+            },
+            destination: {
+              Config: {
+                datacenter: 'US',
+                siteID: '46be54768e7d49ab2628',
+                apiKey: 'dummyApiKey',
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              body: {
+                XML: {},
+                JSON_ARRAY: {},
+                JSON: {
+                  type: 'page',
+                  timestamp: 1707052806,
+                  data: {
+                    url: 'www.rudderlabs.com',
+                    path: '/test',
+                    search: 'abc',
+                    referrer: 'Rudder',
+                    title: 'Test Page',
+                  },
+                  name: 'www.rudderlabs.com',
+                },
+                FORM: {},
+              },
+              files: {},
+              endpoint: 'https://track.customer.io/api/v1/customers/12345/events',
+              userId: '12345',
+              headers: {
+                Authorization: 'Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk=',
+              },
+              version: '1',
+              params: {},
+              type: 'REST',
+              method: 'POST',
+              statusCode: 200,
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
 ];
