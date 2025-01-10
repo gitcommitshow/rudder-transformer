@@ -24,16 +24,20 @@ const generateAlphanumericId = (size = 36) =>
 export const getTestDataFilePaths = (dirPath: string, opts: OptionValues): string[] => {
   const globPattern = join(dirPath, '**', 'data.ts');
   let testFilePaths = globSync(globPattern);
+  let filteredTestFilePaths: string[] = testFilePaths;
 
-  if (opts.destination || opts.source) {
-    testFilePaths = testFilePaths.filter((testFile) =>
-      testFile.includes(opts.destination || opts.source),
+  const destinationOrSource = opts.destination || opts.source;
+  if (destinationOrSource) {
+    filteredTestFilePaths = testFilePaths.filter(
+      (testFile) => destinationOrSource && testFile.includes(`${destinationOrSource}/`),
     );
   }
   if (opts.feature) {
-    testFilePaths = testFilePaths.filter((testFile) => testFile.includes(opts.feature));
+    filteredTestFilePaths = filteredTestFilePaths.filter((testFile) =>
+      testFile.includes(opts.feature),
+    );
   }
-  return testFilePaths;
+  return filteredTestFilePaths;
 };
 
 export const getTestData = (filePath): TestCaseData[] => {
@@ -233,6 +237,30 @@ export const generateTrackPayload: any = (parametersOverride: any) => {
   return removeUndefinedAndNullValues(payload);
 };
 
+export const generateRecordPayload: any = (parametersOverride: any) => {
+  const payload = {
+    type: 'record',
+    action: parametersOverride.action || 'insert',
+    fields: parametersOverride.fields || {},
+    channel: 'sources',
+    context: {
+      sources: {
+        job_id: 'randomJobId',
+        version: 'local',
+        job_run_id: 'jobRunId',
+        task_run_id: 'taskRunId',
+      },
+    },
+    recordId: '3',
+    rudderId: 'randomRudderId',
+    messageId: 'randomMessageId',
+    receivedAt: '2024-11-08T10:30:41.618+05:30',
+    request_ip: '[::1]',
+    identifiers: parametersOverride.identifiers || {},
+  };
+  return removeUndefinedAndNullValues(payload);
+};
+
 export const generateSimplifiedTrackPayload: any = (parametersOverride: any) => {
   return removeUndefinedAndNullValues({
     type: 'track',
@@ -249,6 +277,7 @@ export const generateSimplifiedTrackPayload: any = (parametersOverride: any) => 
       device: parametersOverride.context.device,
       os: parametersOverride.context.os,
       app: parametersOverride.context.app,
+      page: parametersOverride.context.page,
     }),
     anonymousId: parametersOverride.anonymousId || 'default-anonymousId',
     originalTimestamp: parametersOverride.originalTimestamp || '2021-01-03T17:02:53.193Z',

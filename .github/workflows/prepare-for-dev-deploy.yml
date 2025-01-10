@@ -32,7 +32,7 @@ jobs:
       tag_name_ut: ${{ steps.gen_tag_names.outputs.tag_name_ut }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.1.1
+        uses: actions/checkout@v4.2.1
         with:
           fetch-depth: 1
 
@@ -60,6 +60,7 @@ jobs:
       dockerfile: Dockerfile
       load_target: development
       push_target: production
+      use_merge_sha: true
     secrets:
       DOCKERHUB_PROD_TOKEN: ${{ secrets.DOCKERHUB_PROD_TOKEN }}
 

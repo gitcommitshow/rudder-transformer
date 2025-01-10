@@ -1,3 +1,4 @@
+import { API_VERSION } from '../../../../../src/v0/destinations/google_adwords_remarketing_lists/config';
 export const data = [
   {
     name: 'google_adwords_remarketing_lists',
@@ -19,7 +20,7 @@ export const data = [
             destination: {
               Config: {
                 rudderAccountId: 'rudder-acc-id',
-                listId: 'list111',
+                audienceId: 'list111',
                 customerId: '7693729833',
                 loginCustomerId: '',
                 subAccount: false,
@@ -69,8 +70,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint:
-                'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
+              endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
               headers: {
                 Authorization: 'Bearer dummy-access',
                 'Content-Type': 'application/json',
@@ -151,7 +151,7 @@ export const data = [
             destination: {
               Config: {
                 rudderAccountId: 'rudder-acc-id',
-                listId: 'list111',
+                audienceId: 'list111',
                 customerId: '769-372-9833',
                 loginCustomerId: '870-483-0944',
                 subAccount: true,
@@ -202,8 +202,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint:
-                'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
+              endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
               headers: {
                 Authorization: 'Bearer dummy-access',
                 'Content-Type': 'application/json',
@@ -270,7 +269,7 @@ export const data = [
             destination: {
               Config: {
                 rudderAccountId: 'rudder-acc-id',
-                listId: 'list111',
+                audienceId: 'list111',
                 customerId: '7693729833',
                 loginCustomerId: '',
                 subAccount: false,
@@ -322,8 +321,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint:
-                'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
+              endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
               headers: {
                 Authorization: 'Bearer dummy-access',
                 'Content-Type': 'application/json',
@@ -389,7 +387,7 @@ export const data = [
             destination: {
               Config: {
                 rudderAccountId: 'rudder-acc-id',
-                listId: 'list111',
+                audienceId: 'list111',
                 customerId: '7693729833',
                 loginCustomerId: '',
                 subAccount: false,
@@ -497,7 +495,7 @@ export const data = [
             destination: {
               Config: {
                 rudderAccountId: 'rudder-acc-id',
-                listId: 'list111',
+                audienceId: 'list111',
                 customerId: '7693729833',
                 loginCustomerId: '',
                 subAccount: false,
@@ -587,7 +585,7 @@ export const data = [
             destination: {
               Config: {
                 rudderAccountId: 'rudder-acc-id',
-                listId: 'list111',
+                audienceId: 'list111',
                 customerId: '7693729833',
                 loginCustomerId: '',
                 subAccount: false,
@@ -675,7 +673,7 @@ export const data = [
             destination: {
               Config: {
                 rudderAccountId: 'rudder-acc-id',
-                listId: 'list111',
+                audienceId: 'list111',
                 customerId: '7693729833',
                 loginCustomerId: '',
                 subAccount: false,
@@ -751,7 +749,7 @@ export const data = [
             destination: {
               Config: {
                 rudderAccountId: 'rudder-acc-id',
-                listId: 'list111',
+                audienceId: 'list111',
                 customerId: '7693729833',
                 loginCustomerId: '',
                 subAccount: true,
@@ -847,7 +845,7 @@ export const data = [
             destination: {
               Config: {
                 rudderAccountId: 'rudder-acc-id',
-                listId: 'list111',
+                audienceId: 'list111',
                 customerId: '7693729833',
                 loginCustomerId: '',
                 subAccount: false,
@@ -1424,8 +1422,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint:
-                'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
+              endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
               headers: {
                 Authorization: 'Bearer dummy-access',
                 'Content-Type': 'application/json',
@@ -2743,7 +2740,7 @@ export const data = [
             destination: {
               Config: {
                 rudderAccountId: 'rudder-acc-id',
-                listId: 'list111',
+                audienceId: 'list111',
                 customerId: '7693729833',
                 loginCustomerId: '',
                 subAccount: false,
@@ -2819,8 +2816,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint:
-                'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
+              endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
               headers: {
                 Authorization: 'Bearer dummy-access',
                 'Content-Type': 'application/json',
@@ -2899,8 +2895,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint:
-                'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
+              endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
               headers: {
                 Authorization: 'Bearer dummy-access',
                 'Content-Type': 'application/json',
@@ -2998,7 +2993,7 @@ export const data = [
             destination: {
               Config: {
                 rudderAccountId: 'rudder-acc-id',
-                listId: 'list111',
+                audienceId: 'list111',
                 customerId: '7693729833',
                 loginCustomerId: '',
                 subAccount: false,
@@ -4112,8 +4107,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint:
-                'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
+              endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
               headers: {
                 Authorization: 'Bearer dummy-access',
                 'Content-Type': 'application/json',
@@ -5412,8 +5406,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint:
-                'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
+              endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
               headers: {
                 Authorization: 'Bearer dummy-access',
                 'Content-Type': 'application/json',
@@ -6731,7 +6724,7 @@ export const data = [
             destination: {
               Config: {
                 rudderAccountId: 'rudder-acc-id',
-                listId: 'list111',
+                audienceId: 'list111',
                 customerId: '7693729833',
                 loginCustomerId: '',
                 subAccount: false,
@@ -6789,8 +6782,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint:
-                'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
+              endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
               headers: {
                 Authorization: 'Bearer dummy-access',
                 'Content-Type': 'application/json',
@@ -6888,7 +6880,7 @@ export const data = [
             destination: {
               Config: {
                 rudderAccountId: 'rudder-acc-id',
-                listId: 'list111',
+                audienceId: 'list111',
                 customerId: '7693729833',
                 loginCustomerId: '',
                 subAccount: false,
@@ -6985,7 +6977,7 @@ export const data = [
             destination: {
               Config: {
                 rudderAccountId: 'rudder-acc-id',
-                listId: 'list111',
+                audienceId: 'list111',
                 customerId: '7693729833',
                 loginCustomerId: '',
                 subAccount: false,
@@ -8099,8 +8091,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint:
-                'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
+              endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
               headers: {
                 Authorization: 'Bearer dummy-access',
                 'Content-Type': 'application/json',
@@ -9399,8 +9390,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint:
-                'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
+              endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
               headers: {
                 Authorization: 'Bearer dummy-access',
                 'Content-Type': 'application/json',
@@ -10718,7 +10708,7 @@ export const data = [
             destination: {
               Config: {
                 rudderAccountId: 'rudder-acc-id',
-                listId: 'list111',
+                audienceId: 'list111',
                 customerId: '7693729833',
                 loginCustomerId: '',
                 subAccount: false,
@@ -10794,8 +10784,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint:
-                'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
+              endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
               headers: {
                 Authorization: 'Bearer dummy-access',
                 'Content-Type': 'application/json',
@@ -10874,8 +10863,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint:
-                'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
+              endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
               headers: {
                 Authorization: 'Bearer dummy-access',
                 'Content-Type': 'application/json',
@@ -10973,7 +10961,7 @@ export const data = [
             destination: {
               Config: {
                 rudderAccountId: 'rudder-acc-id',
-                listId: 'list111',
+                audienceId: 'list111',
                 customerId: '7693729833',
                 loginCustomerId: '',
                 subAccount: false,
@@ -11049,8 +11037,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint:
-                'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
+              endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
               headers: {
                 Authorization: 'Bearer dummy-access',
                 'Content-Type': 'application/json',
@@ -11127,8 +11114,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint:
-                'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
+              endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
               headers: {
                 Authorization: 'Bearer dummy-access',
                 'Content-Type': 'application/json',
@@ -11221,7 +11207,7 @@ export const data = [
             destination: {
               Config: {
                 rudderAccountId: 'rudder-acc-id',
-                listId: 'list111',
+                audienceId: 'list111',
                 customerId: '7693729833',
                 loginCustomerId: '',
                 subAccount: false,
@@ -11271,8 +11257,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint:
-                'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
+              endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
               headers: {
                 Authorization: 'Bearer dummy-access',
                 'Content-Type': 'application/json',
@@ -11343,7 +11328,7 @@ export const data = [
             destination: {
               Config: {
                 rudderAccountId: 'rudder-acc-id',
-                listId: 'list111',
+                audienceId: 'list111',
                 customerId: '7693729833',
                 loginCustomerId: '',
                 subAccount: false,
@@ -11427,7 +11412,6 @@ export const data = [
             destination: {
               Config: {
                 rudderAccountId: 'rudder-acc-id',
-                listId: 'list111',
                 customerId: '7693729833',
                 loginCustomerId: '',
                 subAccount: false,
@@ -11478,8 +11462,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint:
-                'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
+              endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
               headers: {
                 Authorization: 'Bearer dummy-access',
                 'Content-Type': 'application/json',
@@ -11617,8 +11600,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint:
-                'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
+              endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
               headers: {
                 Authorization: 'Bearer dummy-access',
                 'Content-Type': 'application/json',
@@ -11755,8 +11737,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint:
-                'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
+              endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
               headers: {
                 Authorization: 'Bearer dummy-access',
                 'Content-Type': 'application/json',
@@ -11895,8 +11876,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint:
-                'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
+              endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
               headers: {
                 Authorization: 'Bearer dummy-access',
                 'Content-Type': 'application/json',
@@ -12038,8 +12018,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint:
-                'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
+              endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
               headers: {
                 Authorization: 'Bearer dummy-access',
                 'Content-Type': 'application/json',

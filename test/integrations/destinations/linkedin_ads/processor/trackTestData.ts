@@ -32,11 +32,6 @@ const commonDestination: Destination = {
         to: '34567',
       },
     ],
-    oneTrustCookieCategories: [
-      {
-        oneTrustCookieCategory: 'Marketing',
-      },
-    ],
   },
   Enabled: true,
 };
@@ -153,6 +148,7 @@ export const trackTestData: ProcessorTestData[] = [
             destination: commonDestination,
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -226,6 +222,7 @@ export const trackTestData: ProcessorTestData[] = [
             destination: commonDestination,
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -332,6 +329,7 @@ export const trackTestData: ProcessorTestData[] = [
             destination: commonDestination,
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -419,6 +417,7 @@ export const trackTestData: ProcessorTestData[] = [
             destination: commonDestination,
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -477,6 +476,7 @@ export const trackTestData: ProcessorTestData[] = [
             destination: commonDestination,
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -563,6 +563,7 @@ export const trackTestData: ProcessorTestData[] = [
             destination: commonDestination,
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -656,6 +657,7 @@ export const trackTestData: ProcessorTestData[] = [
             destination: commonDestination,
           },
         ],
+        method: 'POST',
       },
     },
     output: {

@@ -24,6 +24,7 @@ import { appendFileSync } from 'fs';
 import { assertRouterOutput, responses } from '../testHelper';
 import { generateTestReport, initaliseReport } from '../test_reporter/reporter';
 import _ from 'lodash';
+import { enhancedTestUtils } from '../test_reporter/allureReporter';
 
 // To run single destination test cases
 // npm run test:ts -- component  --destination=adobe_analytics
@@ -41,6 +42,7 @@ command
   .option('-i, --index <number>', 'Enter Test index')
   .option('-g, --generate <string>', 'Enter "true" If you want to generate network file')
   .option('-id, --id <string>', 'Enter unique "Id" of the test case you want to run')
+  .option('-s, --source <string>', 'Enter Source Name')
   .parse();
 
 const opts = command.opts();
@@ -54,7 +56,13 @@ if (opts.generate === 'true') {
 
 let server: Server;
 
-const INTEGRATIONS_WITH_UPDATED_TEST_STRUCTURE = ['klaviyo', 'campaign_manager', 'criteo_audience'];
+const INTEGRATIONS_WITH_UPDATED_TEST_STRUCTURE = [
+  'active_campaign',
+  'klaviyo',
+  'campaign_manager',
+  'criteo_audience',
+  'branch',
+];
 
 beforeAll(async () => {
   initaliseReport();
@@ -152,13 +160,8 @@ const testRoute = async (route, tcData: TestCaseData) => {
 
   if (INTEGRATIONS_WITH_UPDATED_TEST_STRUCTURE.includes(tcData.name?.toLocaleLowerCase())) {
     expect(validateTestWithZOD(tcData, response)).toEqual(true);
-    const bodyMatched = _.isEqual(response.body, outputResp.body);
-    const statusMatched = response.status === outputResp.status;
-    if (bodyMatched && statusMatched) {
-      generateTestReport(tcData, response.body, 'passed');
-    } else {
-      generateTestReport(tcData, response.body, 'failed');
-    }
+    enhancedTestUtils.beforeTestRun(tcData);
+    enhancedTestUtils.afterTestRun(tcData, response.body);
   }
 
   if (outputResp?.body) {
@@ -228,7 +231,7 @@ describe.each(allTestDataFilePaths)('%s Tests', (testDataPath) => {
     });
   }
   describe(`${testData[0].name} ${testData[0].module}`, () => {
-    test.each(testData)('$feature -> $description', async (tcData) => {
+    test.each(testData)('$feature -> $description (index: $#)', async (tcData) => {
       tcData?.mockFns?.(mockAdapter);
 
       switch (tcData.module) {

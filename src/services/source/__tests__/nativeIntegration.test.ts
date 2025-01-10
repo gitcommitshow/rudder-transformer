@@ -8,22 +8,23 @@ afterEach(() => {
   jest.clearAllMocks();
 });
 
+const headers = {
+  'x-rudderstack-source': 'test',
+};
+
 describe('NativeIntegration Source Service', () => {
   test('sourceTransformRoutine - success', async () => {
     const sourceType = '__rudder_test__';
     const version = 'v0';
     const requestMetadata = {};
 
-    const event = { message: { a: 'b' } };
+    const event = { message: { a: 'b' }, headers };
     const events = [event, event];
 
-    const tevent = { anonymousId: 'test' } as RudderMessage;
+    const tevent = { anonymousId: 'test', context: { headers } } as RudderMessage;
     const tresp = { output: { batch: [tevent] }, statusCode: 200 } as SourceTransformationResponse;
 
-    const tresponse = [
-      { output: { batch: [{ anonymousId: 'test' }] }, statusCode: 200 },
-      { output: { batch: [{ anonymousId: 'test' }] }, statusCode: 200 },
-    ];
+    const tresponse = [tresp, tresp];
 
     FetchHandler.getSourceHandler = jest.fn().mockImplementationOnce((d, v) => {
       expect(d).toEqual(sourceType);
@@ -43,7 +44,15 @@ describe('NativeIntegration Source Service', () => {
       });
 
     const service = new NativeIntegrationSourceService();
-    const resp = await service.sourceTransformRoutine(events, sourceType, version, requestMetadata);
+    const adapterConvertedEvents = events.map((eventInstance) => {
+      return { output: eventInstance };
+    });
+    const resp = await service.sourceTransformRoutine(
+      adapterConvertedEvents,
+      sourceType,
+      version,
+      requestMetadata,
+    );
 
     expect(resp).toEqual(tresponse);
 
@@ -80,7 +89,15 @@ describe('NativeIntegration Source Service', () => {
     jest.spyOn(stats, 'increment').mockImplementation(() => {});
 
     const service = new NativeIntegrationSourceService();
-    const resp = await service.sourceTransformRoutine(events, sourceType, version, requestMetadata);
+    const adapterConvertedEvents = events.map((eventInstance) => {
+      return { output: eventInstance };
+    });
+    const resp = await service.sourceTransformRoutine(
+      adapterConvertedEvents,
+      sourceType,
+      version,
+      requestMetadata,
+    );
 
     expect(resp).toEqual(tresponse);
 

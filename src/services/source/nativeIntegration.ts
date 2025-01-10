@@ -4,6 +4,8 @@ import {
   ErrorDetailer,
   MetaTransferObject,
   RudderMessage,
+  SourceInputConversionResult,
+  SourceTransformationEvent,
   SourceTransformationResponse,
 } from '../../types/index';
 import stats from '../../util/stats';
@@ -27,7 +29,7 @@ export class NativeIntegrationSourceService implements SourceService {
   }
 
   public async sourceTransformRoutine(
-    sourceEvents: NonNullable<unknown>[],
+    sourceEvents: SourceInputConversionResult<NonNullable<SourceTransformationEvent>>[],
     sourceType: string,
     version: string,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -38,9 +40,38 @@ export class NativeIntegrationSourceService implements SourceService {
     const respList: SourceTransformationResponse[] = await Promise.all<FixMe>(
       sourceEvents.map(async (sourceEvent) => {
         try {
-          const respEvents: RudderMessage | RudderMessage[] | SourceTransformationResponse =
-            await sourceHandler.process(sourceEvent);
-          return SourcePostTransformationService.handleSuccessEventsSource(respEvents);
+          if (sourceEvent.conversionError) {
+            stats.increment('source_transform_errors', {
+              source: sourceType,
+              version,
+            });
+            logger.debug(`Error during source Transform: ${sourceEvent.conversionError}`, {
+              ...logger.getLogMetadata(metaTO.errorDetails),
+            });
+            return SourcePostTransformationService.handleFailureEventsSource(
+              sourceEvent.conversionError,
+              metaTO,
+            );
+          }
+
+          if (sourceEvent.output) {
+            const newSourceEvent = sourceEvent.output;
+
+            const { headers } = newSourceEvent;
+            if (headers) {
+              delete newSourceEvent.headers;
+            }
+
+            const respEvents: RudderMessage | RudderMessage[] | SourceTransformationResponse =
+              await sourceHandler.process(newSourceEvent);
+            return SourcePostTransformationService.handleSuccessEventsSource(respEvents, {
+              headers,
+            });
+          }
+          return SourcePostTransformationService.handleFailureEventsSource(
+            new Error('Error post version converstion, converstion output is undefined'),
+            metaTO,
+          );
         } catch (error: FixMe) {
           stats.increment('source_transform_errors', {
             source: sourceType,

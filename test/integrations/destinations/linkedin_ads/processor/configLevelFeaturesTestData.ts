@@ -36,11 +36,6 @@ const commonDestination: Destination = {
         to: '34567',
       },
     ],
-    oneTrustCookieCategories: [
-      {
-        oneTrustCookieCategory: 'Marketing',
-      },
-    ],
   },
   Enabled: true,
 };
@@ -94,6 +89,7 @@ export const configLevelFeaturesTestData: ProcessorTestData[] = [
             destination: overrideDestination(commonDestination, { hashData: false }),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
@@ -169,6 +165,7 @@ export const configLevelFeaturesTestData: ProcessorTestData[] = [
             }),
           },
         ],
+        method: 'POST',
       },
     },
     output: {
